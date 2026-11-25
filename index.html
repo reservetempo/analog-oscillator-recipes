@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analog Oscillator Recipes: square, triangle, sine</title>
+<meta name="description" content="Three breadboard recipes for learning analog synth oscillators: a square wave, a square plus triangle, and a triangle-to-sine converter.">
+<style>
+  :root {
+    --bg: #fbfaf7; --fg: #1d1d1b; --muted: #66635c; --rule: #dedad1;
+    --card: #ffffff; --accent: #b4441f; --accent-soft: #f6e7df; --code: #f1eee7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161614; --fg: #ece9e2; --muted: #a39f95; --rule: #34332f;
+      --card: #1e1e1b; --accent: #ef8a5d; --accent-soft: #3a2519; --code: #26251f;
+    }
+    figure img { filter: brightness(.94); }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 780px; margin: 0 auto; padding: 48px 22px 80px; }
+  h1 { font-size: 2.1rem; line-height: 1.15; margin: 0 0 .4em; letter-spacing: -.01em; }
+  h2 { font-size: 1.5rem; margin: 2.6em 0 .3em; line-height: 1.25; }
+  h3 { font-size: 1.05rem; margin: 1.8em 0 .4em; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  p, li { max-width: 68ch; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  .lede { font-size: 1.12rem; color: var(--muted); margin-top: 0; }
+  code, .mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: .9em; background: var(--code); padding: .08em .35em; border-radius: 4px; }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 3em 0; }
+
+  /* path */
+  .path { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 28px 0 8px; }
+  .step {
+    background: var(--card); border: 1px solid var(--rule); border-radius: 10px;
+    padding: 14px 14px 12px; text-decoration: none; color: inherit; display: block;
+  }
+  .step:hover { border-color: var(--accent); }
+  .step .n { font-size: .78rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+  .step .t { font-weight: 600; margin: 2px 0 6px; }
+  .step svg { display: block; width: 100%; height: 34px; }
+  .wave { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linejoin: round; }
+  .axis { stroke: var(--rule); stroke-width: 1; }
+  @media (max-width: 560px) { .path { grid-template-columns: 1fr; } }
+
+  .tag { display: inline-block; font-size: .78rem; padding: .1em .55em; border-radius: 99px; background: var(--accent-soft); color: var(--accent); font-weight: 600; vertical-align: middle; margin-left: .4em; }
+
+  figure { margin: 22px 0; background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 12px; }
+  figure img { display: block; width: 100%; height: auto; border-radius: 4px; background: #fff; }
+  figcaption { font-size: .88rem; color: var(--muted); margin-top: 10px; }
+
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; margin: 10px 0; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font-weight: 600; color: var(--muted); font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
+
+  .ic {
+    background: var(--card); border: 1px solid var(--rule); border-left: 4px solid var(--accent);
+    border-radius: 8px; padding: 12px 16px; margin: 18px 0;
+  }
+  .ic b { font-size: 1.05rem; }
+  .ic .links a { margin-right: 14px; white-space: nowrap; }
+  .note { background: var(--accent-soft); border-radius: 8px; padding: 12px 16px; margin: 18px 0; }
+  .note p { margin: .3em 0; }
+  ol li, ul li { margin: .3em 0; }
+  .formula { font-family: ui-monospace, Consolas, monospace; background: var(--code); padding: 10px 14px; border-radius: 6px; display: inline-block; }
+  footer { margin-top: 4em; font-size: .88rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Analog oscillator recipes</h1>
+<p class="lede">Three breadboard circuits, in the order to build them: a square wave, then a square plus a triangle, then a converter that turns that triangle into a sine. Each one is a figure from a book, shown here with its parts, the chips you need and how to get it working.</p>
+
+<nav class="path" aria-label="The three recipes">
+  <a class="step" href="#square">
+    <div class="n">Recipe 1</div>
+    <div class="t">Square</div>
+    <svg viewBox="0 0 120 34" aria-hidden="true"><line class="axis" x1="0" y1="17" x2="120" y2="17"/><polyline class="wave" points="2,30 2,4 30,4 30,30 60,30 60,4 90,4 90,30 118,30"/></svg>
+  </a>
+  <a class="step" href="#triangle">
+    <div class="n">Recipe 2</div>
+    <div class="t">Square + triangle</div>
+    <svg viewBox="0 0 120 34" aria-hidden="true"><line class="axis" x1="0" y1="17" x2="120" y2="17"/><polyline class="wave" points="2,30 31,4 60,30 89,4 118,30"/></svg>
+  </a>
+  <a class="step" href="#sine">
+    <div class="n">Recipe 3</div>
+    <div class="t">Triangle → sine</div>
+    <svg viewBox="0 0 120 34" aria-hidden="true"><line class="axis" x1="0" y1="17" x2="120" y2="17"/><path class="wave" d="M2,17 Q16.5,-9 31,17 T60,17 T89,17 T118,17"/></svg>
+  </a>
+</nav>
+
+<h2 style="margin-top:2em">Before you start</h2>
+<ul>
+  <li><b>A solderless breadboard</b>, solid hook-up wire, and an assortment of resistors, capacitors and potentiometers.</li>
+  <li><b>Power.</b> Recipe 1 runs on one 9 V battery. Recipes 2 and 3 need a <i>split</i> supply (+V, ground, −V). The easy way is two 9 V batteries in series: the joint between them is ground, the free + end is +9 V and the free − end is −9 V.</li>
+  <li><b>Something to listen with</b>: a small guitar amp or powered speaker. These circuits put out a hot signal, so start with the volume low.</li>
+  <li><b>An oscilloscope</b> helps a lot from recipe 2 on, because you will want to see the waves as you adjust them. A cheap USB scope or a sound-card scope app is enough at audio frequencies.</li>
+</ul>
+
+<hr>
+
+<!-- ================= RECIPE 1 ================= -->
+<h2 id="square">1. Square wave <span class="tag">one chip</span></h2>
+<p>A single Schmitt-trigger inverter with a resistor from its output back to its input and a capacitor to ground. This is the fastest way to hear a sound from a circuit you built.</p>
+
+<figure>
+  <img src="images/1-square-40106.png" alt="Book page showing Figure 13.10, a potentiometer-controlled Schmitt-trigger oscillator schematic and breadboard photo, and Figure 13.11, a photoresistor-controlled version." loading="lazy">
+  <figcaption>Nicolas Collins, <i>Handmade Electronic Music</i>, 3rd ed., chapter 13 "My First Oscillator", Figures 13.10 and 13.11 (p. 100).</figcaption>
+</figure>
+
+<h3>Parts</h3>
+<table>
+  <tr><th>Part</th><th>Value</th><th>Notes</th></tr>
+  <tr><td>IC</td><td>CD40106 (or 74C14, CD4584)</td><td>Hex Schmitt-trigger inverter. Not 74HC14 or 74AC14, which won't run on 9 V.</td></tr>
+  <tr><td>Capacitor</td><td>0.1 µF (marked "104")</td><td>Sets the pitch range. Bigger = lower.</td></tr>
+  <tr><td>Resistor or pot</td><td>100 kΩ fixed, or a 1 MΩ pot</td><td>Add about 10 kΩ in series with the pot so it can't reach 0 Ω and go ultrasonic.</td></tr>
+  <tr><td>Output</td><td>¼" or ⅛" jack</td><td>Tip to the output pin, sleeve to ground.</td></tr>
+  <tr><td>Power</td><td>9 V battery + clip</td><td></td></tr>
+</table>
+
+<h3>Build it</h3>
+<ol>
+  <li>Put the chip across the breadboard's centre groove, notch to the left. Wire <b>pin 14 to +9 V</b> and <b>pin 7 to ground</b>.</li>
+  <li>Connect the <b>0.1 µF capacitor from pin 1 to ground</b>.</li>
+  <li>Connect the <b>resistor (or pot + 10 kΩ) between pin 1 and pin 2</b>.</li>
+  <li>Take the output from <b>pin 2</b> to the tip of the jack. Connect the sleeve to ground.</li>
+  <li>Connect the battery and turn the amp up slowly. You should hear a steady buzz: a square wave.</li>
+</ol>
+
+<h3>How it works</h3>
+<p>The inverter's output is always the opposite of its input. While the output is high, the capacitor charges through the resistor. When it reaches the chip's upper threshold the output flips low, and the capacitor discharges until it hits the lower threshold, which flips the output high again. The Schmitt trigger's two thresholds (its hysteresis) keep it switching cleanly instead of stalling in the middle. Pitch depends on R × C: roughly 100–150 Hz with 100 kΩ and 0.1 µF.</p>
+
+<h3>Try next</h3>
+<ul>
+  <li>Swap the resistor for a photoresistor (Figure 13.11) and play it with a flashlight.</li>
+  <li>Try capacitors above 2.2 µF for a slow tick-tock you can use as a clock or LFO.</li>
+  <li>The chip has six inverters: build a second oscillator and mix the two through resistors.</li>
+</ul>
+
+<div class="ic">
+  <b>CD40106B</b>: hex Schmitt-trigger inverter, 3–18 V, DIP-14 (buy the <span class="mono">CD40106BE</span>)
+  <div class="links">
+    <a href="https://www.ti.com/product/CD40106B">TI product page</a>
+    <a href="https://www.ti.com/lit/ds/symlink/cd40106b.pdf">Datasheet (PDF)</a>
+    <a href="https://www.mouser.com/c/?q=CD40106BE">Find at Mouser</a>
+  </div>
+</div>
+
+<hr>
+
+<!-- ================= RECIPE 2 ================= -->
+<h2 id="triangle">2. Square + triangle <span class="tag">two op amps</span></h2>
+<p>This is the "triangle core" that most synth oscillators are built on. One op amp is an <b>integrator</b>, which ramps up and down to make the triangle. The other is a <b>comparator</b>, which flips at the top and bottom of each ramp and makes the square. Each one drives the other.</p>
+
+<figure>
+  <img src="images/2-square-triangle.png" alt="Figure A-10: two op amp square- and triangle-wave oscillator. U1 is an integrator with a 0.1 microfarad feedback capacitor; U2 is a comparator with R1 20K and R2 100K; R3 4.7K and a 1M pot R4 feed back from U2 to U1. U1 outputs a triangle and U2 a square." loading="lazy">
+  <figcaption>Ray Wilson, <i>Make: Analog Synthesizers</i>, Appendix A, Figure A-10 "Two op amp square- and triangle-wave oscillator".</figcaption>
+</figure>
+
+<h3>Parts</h3>
+<table>
+  <tr><th>Part</th><th>Value</th><th>Role</th></tr>
+  <tr><td>U1, U2</td><td>TL072 (one chip holds both)</td><td>U1 = integrator, U2 = comparator</td></tr>
+  <tr><td>Capacitor</td><td>0.1 µF</td><td>Integrator feedback (U1 output → U1 −)</td></tr>
+  <tr><td>R1</td><td>20 kΩ</td><td>Triangle → U2 + input</td></tr>
+  <tr><td>R2</td><td>100 kΩ</td><td>Positive feedback on U2 (sets hysteresis)</td></tr>
+  <tr><td>R3 + R4</td><td>4.7 kΩ + 1 MΩ pot</td><td>Square → U1 − input. R4 is the pitch knob.</td></tr>
+  <tr><td>Power</td><td>±12 V in the book (±9 V also works)</td><td>TL072 pin 8 = +V, pin 4 = −V</td></tr>
+</table>
+
+<h3>Build it</h3>
+<ol>
+  <li>Place the TL072 and wire <b>pin 8 to +V</b> and <b>pin 4 to −V</b>. Op amp A (pins 1, 2, 3) is U1 and op amp B (pins 5, 6, 7) is U2.</li>
+  <li><b>U1, the integrator:</b> pin 3 (+) to ground. Put the 0.1 µF capacitor between pin 2 (−) and pin 1 (out).</li>
+  <li><b>U2, the comparator:</b> pin 6 (−) to ground. R1 (20 kΩ) from U1's output (pin 1) to pin 5 (+). R2 (100 kΩ) from pin 5 to U2's output (pin 7).</li>
+  <li><b>Close the loop:</b> from U2's output (pin 7), through the 1 MΩ pot (R4) and 4.7 kΩ (R3), into U1's pin 2.</li>
+  <li>Power up. The <b>triangle</b> is at pin 1 and the <b>square</b> is at pin 7. Turning R4 changes the pitch of both.</li>
+</ol>
+
+<h3>How it works</h3>
+<p>When U2's output is saturated high, current flows through R3 + R4 into U1's inverting input, and U1's output ramps <i>down</i> steadily. That ramp is one side of the triangle. Through R1 it drags U2's + input down until it crosses zero, U2 slams low, the current reverses, and U1 ramps back up. The R1/R2 divider decides where U2 flips, so it sets the triangle's height. The pot sets how fast the ramps run, so it sets the pitch.</p>
+<p class="formula">f ≈ (R2 / R1) / (4 · (R3 + R4) · C)</p>
+<p>With the book's values that's about <b>12 Hz to 2.7 kHz</b> across the pot. The triangle is about <b>4.2 V peak to peak</b> on ±12 V. To make it bigger, increase R1 or decrease R2.</p>
+
+<div class="ic">
+  <b>TL072</b>: dual low-noise JFET-input op amp, DIP-8 (buy the <span class="mono">TL072CP</span>; a TL082 or TL062 also works)
+  <div class="links">
+    <a href="https://www.ti.com/product/TL072">TI product page</a>
+    <a href="https://www.ti.com/lit/ds/symlink/tl072.pdf">Datasheet (PDF)</a>
+    <a href="https://www.mouser.com/c/?q=TL072CP">Find at Mouser</a>
+  </div>
+</div>
+
+<hr>
+
+<!-- ================= RECIPE 3 ================= -->
+<h2 id="sine">3. Triangle → sine <span class="tag">one OTA</span></h2>
+<p>A sine wave is hard to make directly, so most synths make a triangle and bend its corners round. Here a transconductance amplifier (OTA) is deliberately overdriven. Its tanh-shaped transfer curve flattens the triangle's tips into something very close to a sine.</p>
+
+<figure>
+  <img src="images/3-triangle-to-sine.png" alt="Figure B-4: triangle-to-sine converter using half of an LM13700. The triangle input goes through a 100K Sine Shape trimmer and 20K resistor into pin 3, with 1K to ground; pin 1 is biased by a 1M Sine Bias trimmer; output is taken from the Darlington buffer at pin 8 with a 4.7K pull-down to -9V; a 100K Top/Bottom Symmetry trimmer adds offset." loading="lazy">
+  <figcaption>Ray Wilson, <i>Make: Analog Synthesizers</i>, Appendix B, Figure B-4 "Triangle-to-sine converter using the LM13700", with the start of its explanation.</figcaption>
+</figure>
+
+<h3>Parts</h3>
+<table>
+  <tr><th>Part</th><th>Value</th><th>Role</th></tr>
+  <tr><td>U1-A</td><td>½ LM13700</td><td>Overdriven OTA + its on-chip Darlington buffer</td></tr>
+  <tr><td>R4 trimmer</td><td>100 kΩ, "Sine Shape"</td><td>How hard the triangle drives the OTA</td></tr>
+  <tr><td>R1, R5</td><td>20 kΩ, 1 kΩ</td><td>Attenuator: ±5 V in becomes about ±41 mV at the inputs</td></tr>
+  <tr><td>R2 + R3</td><td>1 MΩ trimmer + 100 kΩ, "Sine Bias"</td><td>Bias current into pin 1: sets gain and curve</td></tr>
+  <tr><td>R7 + R8</td><td>100 kΩ trimmer + 470 kΩ, "Top/Btm Symmetry"</td><td>Nulls offset so both halves match</td></tr>
+  <tr><td>R9, R10</td><td>470 kΩ, 82 kΩ</td><td>Buffer biasing (pins 5 and 7)</td></tr>
+  <tr><td>R6</td><td>4.7 kΩ to −9 V</td><td>Buffer output load (pin 8)</td></tr>
+  <tr><td>Power</td><td>±9 V</td><td>Pin 11 = +V, pin 6 = −V</td></tr>
+</table>
+
+<h3>Build and tune it</h3>
+<ol>
+  <li>Wire the circuit as drawn. The input is pin 3 (+), pin 4 (−) goes to ground, pin 1 is the bias, pin 5 is the output current, which feeds the buffer at pin 7, and the sine comes out of pin 8.</li>
+  <li>Feed in a triangle of about <b>±5 V</b> (10 V peak to peak), centred on ground.</li>
+  <li>With a scope on pin 8, adjust <b>Sine Shape</b> (R4) until the tips round off into a sine.</li>
+  <li>Adjust <b>Sine Bias</b> (R2) for amplitude and shape, then <b>Symmetry</b> (R7) until the top and bottom halves match. The trimmers affect each other, so go back and forth a few times.</li>
+</ol>
+
+<div class="note">
+  <p><b>Joining recipe 2 to recipe 3.</b> Recipe 2's triangle is only about ±2.1 V, but this converter expects about ±5 V, and the two figures use different supplies (±12 V and ±9 V). To run both from one ±9 V supply, try changing recipe 2's <b>R1 from 20 kΩ to about 68 kΩ</b>. That makes the triangle roughly ±5 V. The bigger R1 also lowers the pitch, so change <b>C from 0.1 µF to 0.033 µF</b> to keep a range of about 10 Hz–2.4 kHz. These two values are worked out from the formula above, not taken from the book, and have not been tested. Use the Sine Shape trimmer to take up any difference.</p>
+</div>
+
+<div class="ic">
+  <b>LM13700</b>: dual operational transconductance amplifier with linearizing diodes and buffers, DIP-16 (buy the <span class="mono">LM13700N</span>)
+  <div class="links">
+    <a href="https://www.ti.com/product/LM13700">TI product page</a>
+    <a href="https://www.ti.com/lit/ds/symlink/lm13700.pdf">Datasheet (PDF)</a>
+    <a href="https://www.mouser.com/c/?q=LM13700N">Find at Mouser</a>
+  </div>
+  <p style="margin:.5em 0 0;font-size:.92rem">Wilson lists these as drop-in equivalents: onsemi <a href="https://www.onsemi.com/products/amplifiers-comparators/operational-amplifiers-op-amps/ne5517">NE5517</a>, JRC NJM13600 / NJM13700, CoolAudio V13700, and TI's LM13600.</p>
+</div>
+
+<hr>
+
+<h2 id="ics">Chips you need</h2>
+<table>
+  <tr><th>Chip</th><th>Used in</th><th>Package to buy</th><th>Links</th></tr>
+  <tr><td>CD40106B</td><td>Recipe 1</td><td>CD40106BE (DIP-14)</td><td><a href="https://www.ti.com/product/CD40106B">TI</a> · <a href="https://www.ti.com/lit/ds/symlink/cd40106b.pdf">datasheet</a> · <a href="https://www.mouser.com/c/?q=CD40106BE">Mouser</a></td></tr>
+  <tr><td>TL072</td><td>Recipe 2</td><td>TL072CP (DIP-8)</td><td><a href="https://www.ti.com/product/TL072">TI</a> · <a href="https://www.ti.com/lit/ds/symlink/tl072.pdf">datasheet</a> · <a href="https://www.mouser.com/c/?q=TL072CP">Mouser</a></td></tr>
+  <tr><td>LM13700</td><td>Recipe 3</td><td>LM13700N (DIP-16)</td><td><a href="https://www.ti.com/product/LM13700">TI</a> · <a href="https://www.ti.com/lit/ds/symlink/lm13700.pdf">datasheet</a> · <a href="https://www.mouser.com/c/?q=LM13700N">Mouser</a></td></tr>
+</table>
+<p>Always buy the through-hole <b>DIP</b> package, not surface-mount, so the chips fit a breadboard.</p>
+
+<h2 id="references">References</h2>
+<ol>
+  <li>Nicolas Collins, <i>Handmade Electronic Music: The Art of Hardware Hacking</i>, 3rd ed., Routledge, 2020. Chapter 13, "My First Oscillator", Figures 13.1–13.14. <a href="https://www.routledge.com/Handmade-Electronic-Music-The-Art-of-Hardware-Hacking/Collins/p/book/9780367210106">Publisher page</a></li>
+  <li>Ray Wilson, <i>Make: Analog Synthesizers</i>, Maker Media, 2013. Appendix A, "Simple but Useful Op Amp Oscillators" (Figures A-9 and A-10); Appendix B, "The LM13700" (Figure B-4).</li>
+  <li>Ray Wilson, <a href="https://musicfromouterspace.com/">Music From Outer Space</a>: the author's site with complete synth DIY projects built from these blocks.</li>
+  <li>Texas Instruments datasheets: <a href="https://www.ti.com/lit/ds/symlink/cd40106b.pdf">CD40106B</a>, <a href="https://www.ti.com/lit/ds/symlink/tl072.pdf">TL072</a>, <a href="https://www.ti.com/lit/ds/symlink/lm13700.pdf">LM13700</a>. The LM13700 datasheet includes more application circuits.</li>
+  <li>Further reading on sine shaping: J. Donald Tillman, <a href="https://till.com/articles/sineshaper/">"An Improved Sine Shaper Circuit"</a>, 2020.</li>
+</ol>
+
+<footer>Figures are page captures from the books above and belong to their authors and publishers. They are shown here as study references, so please buy the books.</footer>
+
+</main>
+</body>
+</html>
