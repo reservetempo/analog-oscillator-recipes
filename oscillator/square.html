@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Square wave · Oscillator · Analog Circuits</title>
+<meta name="description" content="A one-chip square-wave oscillator on a breadboard, built from a CD40106 Schmitt-trigger inverter.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<main>
+
+<nav class="crumbs"><a href="../">Analog circuits</a><span>/</span><a href="./">Oscillator</a><span>/</span>Square wave</nav>
+
+<h1>Square wave <span class="tag">one chip</span></h1>
+<p class="lede">A single Schmitt-trigger inverter with a resistor from its output back to its input and a capacitor to ground. This is the fastest way to hear a sound from a circuit you built.</p>
+
+<figure>
+  <img src="../images/1-square-40106.png" alt="Book page showing Figure 13.10, a potentiometer-controlled Schmitt-trigger oscillator schematic and breadboard photo, and Figure 13.11, a photoresistor-controlled version." loading="lazy">
+  <figcaption>Nicolas Collins, <i>Handmade Electronic Music</i>, 3rd ed., chapter 13 "My First Oscillator", Figures 13.10 and 13.11 (p. 100).</figcaption>
+</figure>
+
+<h3>You need</h3>
+<ul>
+  <li><b>A solderless breadboard</b>, solid hook-up wire, and the parts below.</li>
+  <li><b>One 9 V battery</b> and clip.</li>
+  <li><b>Something to listen with</b>: a small guitar amp or powered speaker. The output is a hot signal, so start with the volume low.</li>
+</ul>
+
+<!-- pinout:start -->
+<h3>Pinout</h3>
+<figure class="pinout">
+<div class="pinout-scroll">
+<svg viewBox="0 0 640 448" role="img" aria-labelledby="po-CD40106-t">
+<title id="po-CD40106-t">CD40106 pinout: pin 1 gets the 0.1 µF timing capacitor to ground and the timing resistor to pin 2; pin 2 is the output; pin 7 is ground; pin 14 is +9 V; the other five inverters are spare.</title>
+<text class="po-part" x="320.0" y="22" text-anchor="middle">CD40106 · top view</text>
+<rect class="po-body" x="218.0" y="29.0" width="204" height="390.0" rx="6"/>
+<path class="po-notch" d="M308.0,29.0 a12,12 0 0,0 24,0"/>
+<rect class="po-pin" x="202.0" y="57" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="66">1</text>
+<text class="po-name" x="246.0" y="66">1A</text>
+<text class="po-main" x="194.0" y="53.0" text-anchor="end">0.1 µF cap → GND</text><text class="po-detail" x="194.0" y="66.0" text-anchor="end">timing R → pin 2: 100 kΩ,</text><text class="po-detail" x="194.0" y="79.0" text-anchor="end">or 1 MΩ pot + 10 kΩ</text>
+<rect class="po-pin" x="422.0" y="57" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="66" text-anchor="end">14</text>
+<text class="po-name" x="394.0" y="66" text-anchor="end">VDD</text>
+<text class="po-main" x="446.0" y="59.5" text-anchor="start">+9 V</text><text class="po-detail" x="446.0" y="72.5" text-anchor="start">battery +</text>
+<rect class="po-pin" x="202.0" y="111" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="120">2</text>
+<text class="po-name" x="246.0" y="120">1Y</text>
+<text class="po-main" x="194.0" y="113.5" text-anchor="end">Output → jack tip</text><text class="po-detail" x="194.0" y="126.5" text-anchor="end">timing R back to pin 1</text>
+<rect class="po-pin off" x="422.0" y="111" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="120" text-anchor="end">13</text>
+<text class="po-name" x="394.0" y="120" text-anchor="end">6A</text>
+<text class="po-detail" x="446.0" y="120.0" text-anchor="start">spare input → GND</text>
+<rect class="po-pin off" x="202.0" y="165" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="174">3</text>
+<text class="po-name" x="246.0" y="174">2A</text>
+<text class="po-detail" x="194.0" y="174.0" text-anchor="end">spare input → GND</text>
+<rect class="po-pin off" x="422.0" y="165" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="174" text-anchor="end">12</text>
+<text class="po-name" x="394.0" y="174" text-anchor="end">6Y</text>
+<text class="po-detail" x="446.0" y="174.0" text-anchor="start">spare output, leave open</text>
+<rect class="po-pin off" x="202.0" y="219" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="228">4</text>
+<text class="po-name" x="246.0" y="228">2Y</text>
+<text class="po-detail" x="194.0" y="228.0" text-anchor="end">spare output, leave open</text>
+<rect class="po-pin off" x="422.0" y="219" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="228" text-anchor="end">11</text>
+<text class="po-name" x="394.0" y="228" text-anchor="end">5A</text>
+<text class="po-detail" x="446.0" y="228.0" text-anchor="start">spare input → GND</text>
+<rect class="po-pin off" x="202.0" y="273" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="282">5</text>
+<text class="po-name" x="246.0" y="282">3A</text>
+<text class="po-detail" x="194.0" y="282.0" text-anchor="end">spare input → GND</text>
+<rect class="po-pin off" x="422.0" y="273" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="282" text-anchor="end">10</text>
+<text class="po-name" x="394.0" y="282" text-anchor="end">5Y</text>
+<text class="po-detail" x="446.0" y="282.0" text-anchor="start">spare output, leave open</text>
+<rect class="po-pin off" x="202.0" y="327" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="336">6</text>
+<text class="po-name" x="246.0" y="336">3Y</text>
+<text class="po-detail" x="194.0" y="336.0" text-anchor="end">spare output, leave open</text>
+<rect class="po-pin off" x="422.0" y="327" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="336" text-anchor="end">9</text>
+<text class="po-name" x="394.0" y="336" text-anchor="end">4A</text>
+<text class="po-detail" x="446.0" y="336.0" text-anchor="start">spare input → GND</text>
+<rect class="po-pin" x="202.0" y="381" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="390">7</text>
+<text class="po-name" x="246.0" y="390">VSS</text>
+<text class="po-main" x="194.0" y="383.5" text-anchor="end">GND</text><text class="po-detail" x="194.0" y="396.5" text-anchor="end">battery −, jack sleeve</text>
+<rect class="po-pin off" x="422.0" y="381" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="390" text-anchor="end">8</text>
+<text class="po-name" x="394.0" y="390" text-anchor="end">4Y</text>
+<text class="po-detail" x="446.0" y="390.0" text-anchor="start">spare output, leave open</text>
+</svg>
+</div>
+<figcaption>Drawn notch-up; on the breadboard it sits across the groove with the notch to the left. Also: a 9 V battery and clip, and a ¼" or ⅛" jack. The chip can be a CD40106, 74C14 or CD4584, but not a 74HC14 or 74AC14, which won't run on 9 V. A bigger capacitor gives a lower pitch. The 10 kΩ in series with the pot stops it reaching 0 Ω and going ultrasonic. Tying spare inputs to ground is standard CMOS practice; it isn't in the book's figure.</figcaption>
+</figure>
+<!-- pinout:end -->
+
+<h3>Build it</h3>
+<ol>
+  <li>Put the chip across the breadboard's centre groove, notch to the left. Wire <b>pin 14 to +9 V</b> and <b>pin 7 to ground</b>.</li>
+  <li>Connect the <b>0.1 µF capacitor from pin 1 to ground</b>.</li>
+  <li>Connect the <b>resistor (or pot + 10 kΩ) between pin 1 and pin 2</b>.</li>
+  <li>Take the output from <b>pin 2</b> to the tip of the jack. Connect the sleeve to ground.</li>
+  <li>Connect the battery and turn the amp up slowly. You should hear a steady buzz: a square wave.</li>
+</ol>
+
+<h3>How it works</h3>
+<p>The inverter's output is always the opposite of its input. While the output is high, the capacitor charges through the resistor. When it reaches the chip's upper threshold the output flips low, and the capacitor discharges until it hits the lower threshold, which flips the output high again. The Schmitt trigger's two thresholds (its hysteresis) keep it switching cleanly instead of stalling in the middle. Pitch depends on R × C: roughly 100–150 Hz with 100 kΩ and 0.1 µF.</p>
+
+<h3>Try next</h3>
+<ul>
+  <li>Swap the resistor for a photoresistor (Figure 13.11) and play it with a flashlight.</li>
+  <li>Try capacitors above 2.2 µF for a slow tick-tock you can use as a clock or LFO.</li>
+  <li>The chip has six inverters: build a second oscillator and mix the two through resistors.</li>
+</ul>
+
+<div class="ic">
+  <b>CD40106B</b>: hex Schmitt-trigger inverter, 3–18 V, DIP-14 (buy the through-hole <span class="mono">CD40106BE</span>)
+  <div class="links">
+    <a href="https://www.ti.com/product/CD40106B">TI product page</a>
+    <a href="https://www.ti.com/lit/ds/symlink/cd40106b.pdf">Datasheet (PDF)</a>
+    <a href="https://www.mouser.com/c/?q=CD40106BE">Find at Mouser</a>
+  </div>
+</div>
+
+<h3>References</h3>
+<ol>
+  <li>Nicolas Collins, <i>Handmade Electronic Music: The Art of Hardware Hacking</i>, 3rd ed., Routledge, 2020. Chapter 13, "My First Oscillator", Figures 13.1–13.14. <a href="https://www.routledge.com/Handmade-Electronic-Music-The-Art-of-Hardware-Hacking/Collins/p/book/9780367210106">Publisher page</a></li>
+  <li>Texas Instruments, <a href="https://www.ti.com/lit/ds/symlink/cd40106b.pdf">CD40106B datasheet</a>.</li>
+</ol>
+
+<nav class="pager"><a href="./">← All oscillators</a><a href="square-triangle.html">Next: Square + triangle →</a></nav>
+
+<footer>Figures are page captures from the books above and belong to their authors and publishers. They are shown here as study references, so please buy the books.</footer>
+
+</main>
+</body>
+</html>

@@ -1,8 +1,12 @@
-# Analog Oscillator Recipes
+# Analog Circuits
 
-Three breadboard recipes for learning analog synth oscillators: a square wave (CD40106), a square plus triangle (two op amps, TL072), and a triangle-to-sine converter (LM13700). Each one has the book figure it comes from, a parts list, links to the chips, and references.
+Breadboard recipes for analog synth circuits, sorted by category. Each recipe has the book figure it comes from, a parts list, links to the chips, and references.
 
-Live: https://reservetempo.github.io/analog-oscillator-recipes/
+- `index.html`: the category list
+- `oscillator/`: square wave (CD40106), square + triangle (TL072), triangle → sine (LM13700)
+- `style.css`: shared styles; `images/`: the book figures
+
+Live: https://reservetempo.github.io/analog-circuits/
 
 Run locally:
 

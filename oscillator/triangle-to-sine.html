@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Triangle → sine · Oscillator · Analog Circuits</title>
+<meta name="description" content="A triangle-to-sine converter on a breadboard using an overdriven LM13700 OTA.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<main>
+
+<nav class="crumbs"><a href="../">Analog circuits</a><span>/</span><a href="./">Oscillator</a><span>/</span>Triangle → sine</nav>
+
+<h1>Triangle → sine <span class="tag">one OTA</span></h1>
+<p class="lede">A sine wave is hard to make directly, so most synths make a triangle and bend its corners round. Here a transconductance amplifier (OTA) is deliberately overdriven. Its tanh-shaped transfer curve flattens the triangle's tips into something very close to a sine.</p>
+
+<figure>
+  <img src="../images/3-triangle-to-sine.png" alt="Figure B-4: triangle-to-sine converter using half of an LM13700. The triangle input goes through a 100K Sine Shape trimmer and 20K resistor into pin 3, with 1K to ground; pin 1 is biased by a 1M Sine Bias trimmer; output is taken from the Darlington buffer at pin 8 with a 4.7K pull-down to -9V; a 100K Top/Bottom Symmetry trimmer adds offset." loading="lazy">
+  <figcaption>Ray Wilson, <i>Make: Analog Synthesizers</i>, Appendix B, Figure B-4 "Triangle-to-sine converter using the LM13700", with the start of its explanation.</figcaption>
+</figure>
+
+<h3>You need</h3>
+<ul>
+  <li><b>A solderless breadboard</b>, solid hook-up wire, and the parts below.</li>
+  <li><b>A ±9 V split supply</b>: two 9 V batteries in series, with the joint between them as ground.</li>
+  <li><b>A triangle wave</b> to convert, such as the one from the <a href="square-triangle.html">square + triangle</a> recipe.</li>
+  <li><b>An oscilloscope</b>: you tune this circuit by eye.</li>
+</ul>
+
+<!-- pinout:start -->
+<h3>Pinout</h3>
+<figure class="pinout">
+<div class="pinout-scroll">
+<svg viewBox="0 0 640 502" role="img" aria-labelledby="po-LM13700-t">
+<title id="po-LM13700-t">LM13700 pinout: only half A is used. Pin 3 takes the attenuated triangle, pin 4 is grounded, pin 1 is the bias, pins 5 and 7 are joined with the buffer bias resistors, pin 8 is the sine output, pin 6 is −9 V and pin 11 is +9 V.</title>
+<text class="po-part" x="320.0" y="22" text-anchor="middle">LM13700 · top view</text>
+<rect class="po-body" x="218.0" y="29.0" width="204" height="444.0" rx="6"/>
+<path class="po-notch" d="M308.0,29.0 a12,12 0 0,0 24,0"/>
+<rect class="po-pin" x="202.0" y="57" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="66">1</text>
+<text class="po-name" x="246.0" y="66">BIAS A</text>
+<text class="po-main" x="194.0" y="59.5" text-anchor="end">Sine Bias: R3 100 kΩ</text><text class="po-detail" x="194.0" y="72.5" text-anchor="end">+ R2 1 MΩ trim from +9 V</text>
+<rect class="po-pin off" x="422.0" y="57" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="66" text-anchor="end">16</text>
+<text class="po-name" x="394.0" y="66" text-anchor="end">BIAS B</text>
+<text class="po-detail" x="446.0" y="66.0" text-anchor="start">not used</text>
+<rect class="po-pin off" x="202.0" y="111" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="120">2</text>
+<text class="po-name" x="246.0" y="120">DIODE A</text>
+<text class="po-detail" x="194.0" y="120.0" text-anchor="end">not used</text>
+<rect class="po-pin off" x="422.0" y="111" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="120" text-anchor="end">15</text>
+<text class="po-name" x="394.0" y="120" text-anchor="end">DIODE B</text>
+<text class="po-detail" x="446.0" y="120.0" text-anchor="start">not used</text>
+<rect class="po-pin" x="202.0" y="165" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="174">3</text>
+<text class="po-name" x="246.0" y="174">IN+ A</text>
+<text class="po-main" x="194.0" y="161.0" text-anchor="end">In: R4 100 kΩ trim + R1 20 kΩ</text><text class="po-detail" x="194.0" y="174.0" text-anchor="end">R5 1 kΩ → GND</text><text class="po-detail" x="194.0" y="187.0" text-anchor="end">R8 470 kΩ → R7 wiper</text>
+<rect class="po-pin off" x="422.0" y="165" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="174" text-anchor="end">14</text>
+<text class="po-name" x="394.0" y="174" text-anchor="end">IN+ B</text>
+<text class="po-detail" x="446.0" y="174.0" text-anchor="start">not used</text>
+<rect class="po-pin" x="202.0" y="219" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="228">4</text>
+<text class="po-name" x="246.0" y="228">IN− A</text>
+<text class="po-main" x="194.0" y="228.0" text-anchor="end">GND</text>
+<rect class="po-pin off" x="422.0" y="219" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="228" text-anchor="end">13</text>
+<text class="po-name" x="394.0" y="228" text-anchor="end">IN− B</text>
+<text class="po-detail" x="446.0" y="228.0" text-anchor="start">not used</text>
+<rect class="po-pin" x="202.0" y="273" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="282">5</text>
+<text class="po-name" x="246.0" y="282">OUT A</text>
+<text class="po-main" x="194.0" y="269.0" text-anchor="end">→ pin 7</text><text class="po-detail" x="194.0" y="282.0" text-anchor="end">R9 470 kΩ → +9 V</text><text class="po-detail" x="194.0" y="295.0" text-anchor="end">R10 82 kΩ → GND</text>
+<rect class="po-pin off" x="422.0" y="273" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="282" text-anchor="end">12</text>
+<text class="po-name" x="394.0" y="282" text-anchor="end">OUT B</text>
+<text class="po-detail" x="446.0" y="282.0" text-anchor="start">not used</text>
+<rect class="po-pin" x="202.0" y="327" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="336">6</text>
+<text class="po-name" x="246.0" y="336">V−</text>
+<text class="po-main" x="194.0" y="336.0" text-anchor="end">−9 V</text>
+<rect class="po-pin" x="422.0" y="327" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="336" text-anchor="end">11</text>
+<text class="po-name" x="394.0" y="336" text-anchor="end">V+</text>
+<text class="po-main" x="446.0" y="336.0" text-anchor="start">+9 V</text>
+<rect class="po-pin" x="202.0" y="381" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="390">7</text>
+<text class="po-name" x="246.0" y="390">BUF IN A</text>
+<text class="po-main" x="194.0" y="390.0" text-anchor="end">← pin 5</text>
+<rect class="po-pin off" x="422.0" y="381" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="390" text-anchor="end">10</text>
+<text class="po-name" x="394.0" y="390" text-anchor="end">BUF IN B</text>
+<text class="po-detail" x="446.0" y="390.0" text-anchor="start">not used</text>
+<rect class="po-pin" x="202.0" y="435" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="444">8</text>
+<text class="po-name" x="246.0" y="444">BUF OUT A</text>
+<text class="po-main" x="194.0" y="437.5" text-anchor="end">Sine out</text><text class="po-detail" x="194.0" y="450.5" text-anchor="end">R6 4.7 kΩ → −9 V</text>
+<rect class="po-pin off" x="422.0" y="435" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="444" text-anchor="end">9</text>
+<text class="po-name" x="394.0" y="444" text-anchor="end">BUF OUT B</text>
+<text class="po-detail" x="446.0" y="444.0" text-anchor="start">not used</text>
+</svg>
+</div>
+<figcaption>Only half A is used. The trimmers are R4 Sine Shape (100 kΩ), R2 Sine Bias (1 MΩ) and R7 Top/Btm Symmetry: a 100 kΩ trimmer with its ends on +9 V and −9 V and its wiper feeding R8. Wiring is read from Wilson's Figure B-4.</figcaption>
+</figure>
+<!-- pinout:end -->
+
+<h3>Build and tune it</h3>
+<ol>
+  <li>Wire the circuit as drawn. The input is pin 3 (+), pin 4 (−) goes to ground, pin 1 is the bias, pin 5 is the output current, which feeds the buffer at pin 7, and the sine comes out of pin 8.</li>
+  <li>Feed in a triangle of about <b>±5 V</b> (10 V peak to peak), centred on ground.</li>
+  <li>With a scope on pin 8, adjust <b>Sine Shape</b> (R4) until the tips round off into a sine.</li>
+  <li>Adjust <b>Sine Bias</b> (R2) for amplitude and shape, then <b>Symmetry</b> (R7) until the top and bottom halves match. The trimmers affect each other, so go back and forth a few times.</li>
+</ol>
+
+<div class="note">
+  <p><b>Using the square + triangle recipe as the source.</b> That recipe's triangle is only about ±2.1 V and its figure uses ±12 V. To run both from one ±9 V supply, change its <b>R1 from 20 kΩ to about 68 kΩ</b> (triangle ≈ ±5 V) and its <b>C from 0.1 µF to 0.033 µF</b> (keeps about 10 Hz–2.4 kHz). These values are worked out from the formula, not taken from the book, and have not been tested. Use the Sine Shape trimmer to take up any difference.</p>
+</div>
+
+<div class="ic">
+  <b>LM13700</b>: dual operational transconductance amplifier with linearizing diodes and buffers, DIP-16 (buy the through-hole <span class="mono">LM13700N</span>)
+  <div class="links">
+    <a href="https://www.ti.com/product/LM13700">TI product page</a>
+    <a href="https://www.ti.com/lit/ds/symlink/lm13700.pdf">Datasheet (PDF)</a>
+    <a href="https://www.mouser.com/c/?q=LM13700N">Find at Mouser</a>
+  </div>
+  <p style="margin:.5em 0 0;font-size:.92rem">Wilson lists these as drop-in equivalents: onsemi <a href="https://www.onsemi.com/products/amplifiers-comparators/operational-amplifiers-op-amps/ne5517">NE5517</a>, JRC NJM13600 / NJM13700, CoolAudio V13700, and TI's LM13600.</p>
+</div>
+
+<h3>References</h3>
+<ol>
+  <li>Ray Wilson, <i>Make: Analog Synthesizers</i>, Maker Media, 2013. Appendix B, "The LM13700" (Figure B-4).</li>
+  <li>Texas Instruments, <a href="https://www.ti.com/lit/ds/symlink/lm13700.pdf">LM13700 datasheet</a>, which includes more application circuits.</li>
+  <li>Further reading on sine shaping: J. Donald Tillman, <a href="https://till.com/articles/sineshaper/">"An Improved Sine Shaper Circuit"</a>, 2020.</li>
+</ol>
+
+<nav class="pager"><a href="square-triangle.html">← Square + triangle</a><a href="./">All oscillators</a></nav>
+
+<footer>Figures are page captures from the books above and belong to their authors and publishers. They are shown here as study references, so please buy the books.</footer>
+
+</main>
+</body>
+</html>

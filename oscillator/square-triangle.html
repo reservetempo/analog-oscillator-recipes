@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Square + triangle · Oscillator · Analog Circuits</title>
+<meta name="description" content="A two-op-amp square and triangle oscillator (the triangle core of most synth VCOs) on a breadboard with a TL072.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<main>
+
+<nav class="crumbs"><a href="../">Analog circuits</a><span>/</span><a href="./">Oscillator</a><span>/</span>Square + triangle</nav>
+
+<h1>Square + triangle <span class="tag">two op amps</span></h1>
+<p class="lede">This is the "triangle core" that most synth oscillators are built on. One op amp is an <b>integrator</b>, which ramps up and down to make the triangle. The other is a <b>comparator</b>, which flips at the top and bottom of each ramp and makes the square. Each one drives the other.</p>
+
+<figure>
+  <img src="../images/2-square-triangle.png" alt="Figure A-10: two op amp square- and triangle-wave oscillator. U1 is an integrator with a 0.1 microfarad feedback capacitor; U2 is a comparator with R1 20K and R2 100K; R3 4.7K and a 1M pot R4 feed back from U2 to U1. U1 outputs a triangle and U2 a square." loading="lazy">
+  <figcaption>Ray Wilson, <i>Make: Analog Synthesizers</i>, Appendix A, Figure A-10 "Two op amp square- and triangle-wave oscillator".</figcaption>
+</figure>
+
+<h3>You need</h3>
+<ul>
+  <li><b>A solderless breadboard</b>, solid hook-up wire, and the parts below.</li>
+  <li><b>A split supply</b> (+V, ground, −V). The easy way is two 9 V batteries in series: the joint between them is ground, the free + end is +9 V and the free − end is −9 V.</li>
+  <li><b>An oscilloscope</b> helps a lot here, because you will want to see the waves as you adjust them. A cheap USB scope or a sound-card scope app is enough at audio frequencies.</li>
+  <li><b>Something to listen with</b>: a small amp or powered speaker, volume low to start.</li>
+</ul>
+
+<!-- pinout:start -->
+<h3>Pinout</h3>
+<figure class="pinout">
+<div class="pinout-scroll">
+<svg viewBox="0 0 640 286" role="img" aria-labelledby="po-TL072-t">
+<title id="po-TL072-t">TL072 pinout: op amp A (pins 1 to 3) is the integrator U1 and op amp B (pins 5 to 7) is the comparator U2; pin 4 is −V and pin 8 is +V.</title>
+<text class="po-part" x="320.0" y="22" text-anchor="middle">TL072 · top view</text>
+<rect class="po-body" x="218.0" y="29.0" width="204" height="228.0" rx="6"/>
+<path class="po-notch" d="M308.0,29.0 a12,12 0 0,0 24,0"/>
+<rect class="po-pin" x="202.0" y="57" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="66">1</text>
+<text class="po-name" x="246.0" y="66">OUT A</text>
+<text class="po-main" x="194.0" y="53.0" text-anchor="end">Triangle out (U1)</text><text class="po-detail" x="194.0" y="66.0" text-anchor="end">0.1 µF → pin 2</text><text class="po-detail" x="194.0" y="79.0" text-anchor="end">R1 20 kΩ → pin 5</text>
+<rect class="po-pin" x="422.0" y="57" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="66" text-anchor="end">8</text>
+<text class="po-name" x="394.0" y="66" text-anchor="end">V+</text>
+<text class="po-main" x="446.0" y="59.5" text-anchor="start">+V</text><text class="po-detail" x="446.0" y="72.5" text-anchor="start">+9 to +12 V</text>
+<rect class="po-pin" x="202.0" y="111" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="120">2</text>
+<text class="po-name" x="246.0" y="120">IN− A</text>
+<text class="po-main" x="194.0" y="107.0" text-anchor="end">0.1 µF → pin 1</text><text class="po-detail" x="194.0" y="120.0" text-anchor="end">R3 4.7 kΩ + R4 1 MΩ pot</text><text class="po-detail" x="194.0" y="133.0" text-anchor="end">from pin 7 (pitch knob)</text>
+<rect class="po-pin" x="422.0" y="111" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="120" text-anchor="end">7</text>
+<text class="po-name" x="394.0" y="120" text-anchor="end">OUT B</text>
+<text class="po-main" x="446.0" y="107.0" text-anchor="start">Square out (U2)</text><text class="po-detail" x="446.0" y="120.0" text-anchor="start">R2 100 kΩ → pin 5</text><text class="po-detail" x="446.0" y="133.0" text-anchor="start">R3 + R4 → pin 2</text>
+<rect class="po-pin" x="202.0" y="165" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="174">3</text>
+<text class="po-name" x="246.0" y="174">IN+ A</text>
+<text class="po-main" x="194.0" y="174.0" text-anchor="end">GND</text>
+<rect class="po-pin" x="422.0" y="165" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="174" text-anchor="end">6</text>
+<text class="po-name" x="394.0" y="174" text-anchor="end">IN− B</text>
+<text class="po-main" x="446.0" y="174.0" text-anchor="start">GND</text>
+<rect class="po-pin" x="202.0" y="219" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="227.0" y="228">4</text>
+<text class="po-name" x="246.0" y="228">V−</text>
+<text class="po-main" x="194.0" y="221.5" text-anchor="end">−V</text><text class="po-detail" x="194.0" y="234.5" text-anchor="end">−9 to −12 V</text>
+<rect class="po-pin" x="422.0" y="219" width="16" height="10" rx="1.5"/>
+<text class="po-num" x="413.0" y="228" text-anchor="end">5</text>
+<text class="po-name" x="394.0" y="228" text-anchor="end">IN+ B</text>
+<text class="po-main" x="446.0" y="221.5" text-anchor="start">R1 20 kΩ from pin 1</text><text class="po-detail" x="446.0" y="234.5" text-anchor="start">R2 100 kΩ from pin 7</text>
+</svg>
+</div>
+<figcaption>U1 (op amp A) is the integrator and U2 (op amp B) is the comparator. The book uses ±12 V, and ±9 V also works. A TL082 or TL062 drops in.</figcaption>
+</figure>
+<!-- pinout:end -->
+
+<h3>Build it</h3>
+<ol>
+  <li>Place the TL072 and wire <b>pin 8 to +V</b> and <b>pin 4 to −V</b>. Op amp A (pins 1, 2, 3) is U1 and op amp B (pins 5, 6, 7) is U2.</li>
+  <li><b>U1, the integrator:</b> pin 3 (+) to ground. Put the 0.1 µF capacitor between pin 2 (−) and pin 1 (out).</li>
+  <li><b>U2, the comparator:</b> pin 6 (−) to ground. R1 (20 kΩ) from U1's output (pin 1) to pin 5 (+). R2 (100 kΩ) from pin 5 to U2's output (pin 7).</li>
+  <li><b>Close the loop:</b> from U2's output (pin 7), through the 1 MΩ pot (R4) and 4.7 kΩ (R3), into U1's pin 2.</li>
+  <li>Power up. The <b>triangle</b> is at pin 1 and the <b>square</b> is at pin 7. Turning R4 changes the pitch of both.</li>
+</ol>
+
+<h3>How it works</h3>
+<p>When U2's output is saturated high, current flows through R3 + R4 into U1's inverting input, and U1's output ramps <i>down</i> steadily. That ramp is one side of the triangle. Through R1 it drags U2's + input down until it crosses zero, U2 slams low, the current reverses, and U1 ramps back up. The R1/R2 divider decides where U2 flips, so it sets the triangle's height. The pot sets how fast the ramps run, so it sets the pitch.</p>
+<p class="formula">f ≈ (R2 / R1) / (4 · (R3 + R4) · C)</p>
+<p>With the book's values that's about <b>12 Hz to 2.7 kHz</b> across the pot. The triangle is about <b>4.2 V peak to peak</b> on ±12 V. To make it bigger, increase R1 or decrease R2.</p>
+
+<div class="note">
+  <p><b>Feeding the triangle → sine converter.</b> The <a href="triangle-to-sine.html">triangle → sine</a> recipe expects about ±5 V, but this triangle is only about ±2.1 V. To run both from one ±9 V supply, try changing <b>R1 from 20 kΩ to about 68 kΩ</b>. That makes the triangle roughly ±5 V. The bigger R1 also lowers the pitch, so change <b>C from 0.1 µF to 0.033 µF</b> to keep a range of about 10 Hz–2.4 kHz. These two values are worked out from the formula above, not taken from the book, and have not been tested.</p>
+</div>
+
+<div class="ic">
+  <b>TL072</b>: dual low-noise JFET-input op amp, DIP-8 (buy the through-hole <span class="mono">TL072CP</span>; a TL082 or TL062 also works)
+  <div class="links">
+    <a href="https://www.ti.com/product/TL072">TI product page</a>
+    <a href="https://www.ti.com/lit/ds/symlink/tl072.pdf">Datasheet (PDF)</a>
+    <a href="https://www.mouser.com/c/?q=TL072CP">Find at Mouser</a>
+  </div>
+</div>
+
+<h3>References</h3>
+<ol>
+  <li>Ray Wilson, <i>Make: Analog Synthesizers</i>, Maker Media, 2013. Appendix A, "Simple but Useful Op Amp Oscillators" (Figures A-9 and A-10).</li>
+  <li>Ray Wilson, <a href="https://musicfromouterspace.com/">Music From Outer Space</a>: the author's site with complete synth DIY projects built from these blocks.</li>
+  <li>Texas Instruments, <a href="https://www.ti.com/lit/ds/symlink/tl072.pdf">TL072 datasheet</a>.</li>
+</ol>
+
+<nav class="pager"><a href="square.html">← Square wave</a><a href="triangle-to-sine.html">Next: Triangle → sine →</a></nav>
+
+<footer>Figures are page captures from the books above and belong to their authors and publishers. They are shown here as study references, so please buy the books.</footer>
+
+</main>
+</body>
+</html>
